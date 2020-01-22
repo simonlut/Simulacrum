@@ -1,0 +1,152 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Security.Cryptography;
+using System.Threading;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
+using Rhino.Geometry;
+
+namespace Simulacrum
+{
+    public class ReadCurrentPos : GH_Component
+    {
+        #region Fields
+        Socket _clientSocket;
+        private E6POS CurrentPos;
+        private E6AXIS CurrentAngles;
+        #endregion
+
+        #region gh_methods
+        /// <summary>
+        /// Initializes a new instance of the ReadCurrentPos class.
+        /// </summary>
+        public ReadCurrentPos()
+          : base("Read ActPos", "ActPos",
+              "Read the current position of the Kuka Robot, E6POS",
+              "VirtualRobot", "KukaVarProxy")
+        {
+        }
+
+        /// <summary>
+        /// Registers all the input parameters for this component.
+        /// </summary>
+        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        {
+            //[0] Socket
+            pManager.AddGenericParameter("Socket", "Socket", "Incoming object from TCP Client", GH_ParamAccess.item);
+            //[1] Run the reading.
+            pManager.AddBooleanParameter("Run", "Run", "Run to read, for continues reading, plug-in a boolean toggle.", GH_ParamAccess.item);
+            //[2] Refresh rate.
+            pManager.AddIntegerParameter("Refresh Rate", "Refresh Rate",
+                "The amount of times the position is read per second", GH_ParamAccess.item,20);
+        }
+
+        /// <summary>
+        /// Registers all the output parameters for this component.
+        /// </summary>
+        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        {
+            //[0] Axis Values
+            pManager.AddNumberParameter("Axis Values", "Axis Values", "Axis values of the current position of the KUKA", GH_ParamAccess.list);
+            //[1] TCP Plane
+            pManager.AddPlaneParameter("TCP Plane", "TCP Plane", "Get the current TCP plane of the Robot.",
+                GH_ParamAccess.item);
+            //[2] ABC 
+            pManager.AddNumberParameter("XYZ", "XYZ", "XYZ coordinates of the plane.",
+                GH_ParamAccess.list);
+            //[3] XYZ 
+            pManager.AddNumberParameter("ABC", "ABC", "Rotations around axis A = Z, B = Y, C = X",
+                GH_ParamAccess.list);
+            //[4] E6POS String
+            pManager.AddTextParameter("E6POS", "E6POS", "E6POS String",
+                GH_ParamAccess.item);
+            //[5] E6AXIS String
+            pManager.AddTextParameter("E6AXIS", "E6AXIS", "E6AXIS String",
+                GH_ParamAccess.item);
+
+        }
+
+        /// <summary>
+        /// This is the method that actually does the work.
+        /// </summary>
+        /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
+        protected override void SolveInstance(IGH_DataAccess DA)
+        {
+            // Fields
+            GH_ObjectWrapper abstractSocket = new GH_ObjectWrapper();
+            bool triggerRead = false;
+            int refreshRate = 0;
+
+            E6POS currentPos = new E6POS();
+            E6AXIS currentAngles = new E6AXIS();
+
+            //Check input
+            if (_clientSocket == null)
+            {
+                if (!DA.GetData(0, ref abstractSocket)) return;
+                abstractSocket.CastTo(ref _clientSocket);
+            }
+            if (!DA.GetData(1, ref triggerRead)) return;
+            if (!DA.GetData(2, ref refreshRate)) return;
+
+            //If trigger is pressed, read data and output.
+            if (triggerRead)
+            {
+                string response = Util.ReadVariable(ref _clientSocket, "$POS_ACT", this);
+                currentPos.DeserializeE6POS(response);
+                CurrentPos = currentPos;
+
+                string response2 = Util.ReadVariable(ref _clientSocket, "$AXIS_ACT", this);
+                currentAngles.DeserializeE6AXIS(response2);
+                CurrentAngles = currentAngles;
+            }
+
+            if (!CurrentAngles.IsNull() && !CurrentPos.IsNull())
+            {
+                DA.SetDataList(0, CurrentAngles.GetAxisValues());
+                DA.SetData(1, CurrentPos.GetPlane());
+                DA.SetDataList(2, new List<double> {CurrentPos.X, CurrentPos.Y, CurrentPos.Z});
+                DA.SetDataList(3, new List<double> { CurrentPos.A, CurrentPos.B, CurrentPos.C });
+                DA.SetData(4, CurrentPos.SerializedString);
+                DA.SetData(5, CurrentAngles.SerializedString);
+            }
+
+            // Schedule loop for amount of times per second.
+            GH_Document doc = OnPingDocument();
+            doc?.ScheduleSolution(refreshRate , ScheduleCallback);
+
+        }
+        #endregion
+
+        #region callbacks
+        private void ScheduleCallback(GH_Document doc)
+        {
+            this.ExpireSolution(false);
+        }
+        #endregion
+
+        #region properties
+        /// <summary>
+        /// Provides an Icon for the component.
+        /// </summary>
+        protected override System.Drawing.Bitmap Icon
+        {
+            get
+            {
+                //You can add image files to your project resources and access them like this:
+                // return Resources.IconForThisComponent;
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the unique ID for this component. Do not change this ID after release.
+        /// </summary>
+        public override Guid ComponentGuid
+        {
+            get { return new Guid("915aaf41-9c22-4dd6-8d10-ed267ff587f3"); }
+        }
+        #endregion
+    }
+}
