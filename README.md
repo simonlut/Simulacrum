@@ -5,7 +5,7 @@
  
  Read and write global variables to a KUKA Robot arm using [KukaVarProxy](https://github.com/ImtsSrl/KUKAVARPROXY), directly from Grasshopper.
 
-##Setup :
+##Setup 
 Kuka:
 1. Start the Kuka and run your .src files. Make sure to put all your global variables in a separate .dat file!
 2. Switch the KUKA to expert mode. 
