@@ -22,7 +22,7 @@ Laptop:
 2. In windows: search for 'view network connections'.
 3. Right-click Ethernet and click on properties.
 4. Click on 'Internet Protocol Version 4' and go to properties.
-5. Click on 'Use the following IP Address' and type in the Robot IP Address, but change the last number of the IP address to an abritrary number.
+5. Click on 'Use the following IP Address' and type in the Robot IP Address, but change the last number of the IP address be 1 higher, or one lower than the robot IP address.
 6. Open the example file in grasshopper and make sure that the IP address is the robot IP address and the port is 7000.
 7. Click connect, and use the Netstat monitor to see if the connection is established.
 8. ??? profit
