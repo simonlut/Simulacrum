@@ -11,6 +11,7 @@ namespace Simulacrum
     public class WriteVariable : GH_Component
     {
         private Socket _clientSocket;
+        private string _oResponse;
 
         /// <summary>
         /// Initializes a new instance of the VariableWrite class.
@@ -37,7 +38,7 @@ namespace Simulacrum
             pManager.AddBooleanParameter("Run", "Run", "Write variable to KRC", GH_ParamAccess.item);
             //[4] Refresh Rate
             pManager.AddIntegerParameter("Refresh Rate", "Refresh Rate",
-                "The amount of times the position is read per second", GH_ParamAccess.item, 20);
+                "Time between updates in milliseconds (ms)", GH_ParamAccess.item, 20);
         }
 
         /// <summary>
@@ -68,6 +69,19 @@ namespace Simulacrum
                 if (!DA.GetData(0, ref abstractSocket)) return;
                 abstractSocket.CastTo(ref _clientSocket);
             }
+            else if (_clientSocket != null && !DA.GetData(0, ref abstractSocket))
+            {
+                try
+                {
+                    _clientSocket = null;
+                    return;
+                }
+                catch
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Waiting For Connection...");
+                    return;
+                }
+            }
             if (!DA.GetData(1, ref varWrite)) return;
             if (!DA.GetData(2, ref varData)) return;
             if (!DA.GetData(3, ref run)) return;
@@ -77,10 +91,26 @@ namespace Simulacrum
             if (run)
             {
                 string response = Util.WriteVariable(ref _clientSocket, varWrite, varData, this);
-                DA.SetData(0, response);
+                _oResponse = response;
             }
+
+            DA.SetData(0, _oResponse);
+
+
+            // Schedule loop for amount of times per second.
+            GH_Document doc = OnPingDocument();
+            doc?.ScheduleSolution(refreshRate, ScheduleCallback);
         }
 
+
+        #region callbacks
+        private void ScheduleCallback(GH_Document doc)
+        {
+            this.ExpireSolution(false);
+        }
+        #endregion
+
+        #region Properties
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
@@ -101,5 +131,7 @@ namespace Simulacrum
         {
             get { return new Guid("c8899a75-2a24-4c7b-bf45-1c47782075d4"); }
         }
+        #endregion
+
     }
 }

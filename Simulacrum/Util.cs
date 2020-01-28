@@ -52,7 +52,9 @@ namespace Simulacrum
             }
             catch (SocketException e)
             {
-                component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Read Variable :{0}" + e.ToString());
+                component.ClearRuntimeMessages();
+                component.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Your connection is abruptly closed by the host, make sure to check your cables and if the server is running. Then, turn the connection off and on again.");
+                return "Error, No Connection";
             }
             catch (ArgumentNullException e)
             {

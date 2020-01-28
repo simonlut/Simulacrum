@@ -53,6 +53,7 @@ namespace Simulacrum
                 if (!DA.GetData(0, ref _abstractSocket)) return;
                     _abstractSocket.CastTo(ref _clientSocket);
             }
+
             if (!DA.GetData(1, ref _targetPlane)) return;
             if (!DA.GetData(2, ref _worldPlane)) return;
             if (!DA.GetData(3, ref _variableRead)) return;

@@ -37,7 +37,7 @@ namespace Simulacrum
             pManager.AddBooleanParameter("Read Trigger", "Read Trigger", "Read variable from KRC", GH_ParamAccess.item);
             //[3] Refresh rate.
             pManager.AddIntegerParameter("Refresh Rate", "Refresh Rate",
-                "The amount of times the position is read per second", GH_ParamAccess.item, 20);
+                "Time between updates in milliseconds (ms)", GH_ParamAccess.item, 20);
 
         }
 
@@ -66,6 +66,19 @@ namespace Simulacrum
             {
                 if (!DA.GetData(0, ref abstractSocket)) return;
                 abstractSocket.CastTo(ref _clientSocket);
+            }
+            else if (_clientSocket != null && !DA.GetData(0, ref abstractSocket))
+            {
+                try
+                {
+                    _clientSocket = null;
+                    return;
+                }
+                catch
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Waiting For Connection...");
+                    return;
+                }
             }
             if (!DA.GetData(1, ref varRead)) return;
             if (!DA.GetData(2, ref triggerRead)) return;

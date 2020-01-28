@@ -14,6 +14,7 @@ namespace Simulacrum
 
         FRAME frameBase = new FRAME();
         FRAME frameTool = new FRAME();
+
         #endregion
 
         /// <summary>
@@ -67,18 +68,32 @@ namespace Simulacrum
             if (_clientSocket == null)
             {
                 if (!DA.GetData(0, ref abstractSocket)) return;
-                abstractSocket.CastTo(ref _clientSocket);
+                    abstractSocket.CastTo(ref _clientSocket);
+                
+            }
+            else if (_clientSocket != null && !DA.GetData(0, ref abstractSocket))
+            {
+                try
+                {
+                    _clientSocket = null;
+                    return;
+                }
+                catch
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Waiting For Connection...");
+                    return;
+                }
             }
             if (!DA.GetData(1, ref run)) return;
 
             //If trigger is pressed, read data and output.
             if (run)
             {
-                string response = Util.ReadVariable(ref _clientSocket, "$BASE", this);
-                string response2 = Util.ReadVariable(ref _clientSocket, "$TOOL", this);
+                    string response = Util.ReadVariable(ref _clientSocket, "$BASE", this);
+                    string response2 = Util.ReadVariable(ref _clientSocket, "$TOOL", this);
+                    frameBase.DeserializeFrame(response);
+                    frameTool.DeserializeFrame(response2);
 
-                frameBase.DeserializeFrame(response);
-                frameTool.DeserializeFrame(response2);
             }
 
             DA.SetDataList(0, frameBase.GetValuesList());

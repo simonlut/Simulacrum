@@ -38,6 +38,9 @@ namespace Simulacrum
             pManager.AddNumberParameter("Axis Values", "Axis Values", "List of Axis values that can be written to the robot.", GH_ParamAccess.list);
             //[3] Run
             pManager.AddBooleanParameter("Run", "Run", "Write variable to KRC", GH_ParamAccess.item);
+            //[4] Refresh rate.
+            pManager.AddIntegerParameter("Refresh Rate", "Refresh Rate",
+                "Time between updates in milliseconds (ms)", GH_ParamAccess.item, 20);
 
         }
 
@@ -62,6 +65,7 @@ namespace Simulacrum
             string writeVariable = "";
             List<double> axisValues = new List<double>();
             bool run = false;
+            int refreshRate = 0;
 
             //Check input
             if (_clientSocket == null)
@@ -69,10 +73,24 @@ namespace Simulacrum
                 if (!DA.GetData(0, ref abstractSocket)) return;
                 abstractSocket.CastTo(ref _clientSocket);
             }
+            else if (_clientSocket != null && !DA.GetData(0, ref abstractSocket))
+            {
+                try
+                {
+                    _clientSocket = null;
+                    return;
+                }
+                catch
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Waiting For Connection...");
+                    return;
+                }
+            }
             if (!DA.GetData(1, ref writeVariable)) return;
             if (!DA.GetDataList(2, axisValues)) return;
             if (axisValues.Count != 6) AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Make sure to only give 6 axis values.");
             if (!DA.GetData(3, ref run)) return;
+            if (!DA.GetData(4, ref refreshRate)) return;
 
             if (axisValues.Count == 6)
             {
@@ -88,6 +106,17 @@ namespace Simulacrum
             }
 
             DA.SetData(0, _writtenValues);
+
+            // Schedule loop for amount of times per second.
+            GH_Document doc = OnPingDocument();
+            doc?.ScheduleSolution(refreshRate, ScheduleCallback);
+        }
+        #endregion
+
+        #region callbacks
+        private void ScheduleCallback(GH_Document doc)
+        {
+            this.ExpireSolution(false);
         }
         #endregion
 

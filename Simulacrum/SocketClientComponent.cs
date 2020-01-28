@@ -45,11 +45,12 @@ namespace Simulacrum
             {
                 connectToServer = startClient(serverIp, serverPort);
                 DA.SetData(0, new GH_ObjectWrapper(m_clientSocket));
+                this.Message = "";
             }
             else if(m_clientSocket != null)
             {
                 m_clientSocket.Close();
-                this.Message = "Socket Closed.";
+                this.Message = "Connection Closed.";
             }
             else
             {
@@ -61,6 +62,8 @@ namespace Simulacrum
 
         // Global Variables
         Socket m_clientSocket;
+
+
         private bool startClient(string serverIP, int serverSocket)
         {
             m_clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -77,7 +80,8 @@ namespace Simulacrum
                 if (m_clientSocket.Connected)
                 {
                     m_clientSocket.EndConnect(result);
-                }else
+                }
+                else
                 {
                     m_clientSocket.Close();
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Connection Timeout!");

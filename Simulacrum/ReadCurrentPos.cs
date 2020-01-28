@@ -39,7 +39,7 @@ namespace Simulacrum
             pManager.AddBooleanParameter("Run", "Run", "Run to read, for continues reading, plug-in a boolean toggle.", GH_ParamAccess.item);
             //[2] Refresh rate.
             pManager.AddIntegerParameter("Refresh Rate", "Refresh Rate",
-                "The amount of times the position is read per second", GH_ParamAccess.item,20);
+                "Time between updates in milliseconds (ms)", GH_ParamAccess.item,20);
         }
 
         /// <summary>
@@ -86,6 +86,20 @@ namespace Simulacrum
             {
                 if (!DA.GetData(0, ref abstractSocket)) return;
                 abstractSocket.CastTo(ref _clientSocket);
+
+            }
+            else if (_clientSocket != null && !DA.GetData(0, ref abstractSocket))
+            {
+                try
+                {
+                    _clientSocket = null;
+                    return;
+                }
+                catch
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Waiting For Connection...");
+                    return;
+                }
             }
             if (!DA.GetData(1, ref triggerRead)) return;
             if (!DA.GetData(2, ref refreshRate)) return;
@@ -94,12 +108,12 @@ namespace Simulacrum
             if (triggerRead)
             {
                 string response = Util.ReadVariable(ref _clientSocket, "$POS_ACT", this);
-                currentPos.DeserializeE6POS(response);
-                CurrentPos = currentPos;
+                    currentPos.DeserializeE6POS(response);
+                    CurrentPos = currentPos;
 
-                string response2 = Util.ReadVariable(ref _clientSocket, "$AXIS_ACT", this);
-                currentAngles.DeserializeE6AXIS(response2);
-                CurrentAngles = currentAngles;
+                    string response2 = Util.ReadVariable(ref _clientSocket, "$AXIS_ACT", this);
+                    currentAngles.DeserializeE6AXIS(response2);
+                    CurrentAngles = currentAngles;
             }
 
             if (!CurrentAngles.IsNull() && !CurrentPos.IsNull())
@@ -111,6 +125,7 @@ namespace Simulacrum
                 DA.SetData(4, CurrentPos.SerializedString);
                 DA.SetData(5, CurrentAngles.SerializedString);
             }
+
 
             // Schedule loop for amount of times per second.
             GH_Document doc = OnPingDocument();

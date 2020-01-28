@@ -18,7 +18,7 @@ namespace Simulacrum
 
         public NetstatMonitorComponent()
           : base("Netstat Monitor", "Monitor",
-              "Monitors active TCP connections",
+              "Monitors active TCP connections. Checks every 5 seconds if the connection is still established.",
               "VirtualRobot", "KukaVarProxy")
         {
         }
@@ -45,9 +45,21 @@ namespace Simulacrum
                 if (!DA.GetData(0, ref _abstractSocket)){ return;}
                 _abstractSocket.CastTo(ref _clientSocket);
             }
+            else if (_clientSocket != null && !DA.GetData(0, ref _abstractSocket))
+            {
+                try
+                {
+                    _clientSocket = null;
+                    return;
+                }
+                catch
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Waiting For Connection...");
+                    return;
+                }
+            }
 
             IPEndPoint remoteIpEndPoint = _clientSocket.RemoteEndPoint as IPEndPoint;
-
             cmdOutput = callFromCmd(remoteIpEndPoint.ToString() );
             DA.SetData(0, cmdOutput);
 
