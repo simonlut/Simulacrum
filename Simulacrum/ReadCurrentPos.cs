@@ -119,7 +119,7 @@ namespace Simulacrum
             if (!CurrentAngles.IsNull() && !CurrentPos.IsNull())
             {
                 DA.SetDataList(0, CurrentAngles.GetAxisValues());
-                DA.SetData(1, CurrentPos.GetPlane());
+                DA.SetData(1, new Plane(CurrentPos.GetPlane()));
                 DA.SetDataList(2, new List<double> {CurrentPos.X, CurrentPos.Y, CurrentPos.Z});
                 DA.SetDataList(3, new List<double> { CurrentPos.A, CurrentPos.B, CurrentPos.C });
                 DA.SetData(4, CurrentPos.SerializedString);

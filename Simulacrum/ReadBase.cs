@@ -97,9 +97,9 @@ namespace Simulacrum
             }
 
             DA.SetDataList(0, frameBase.GetValuesList());
-            DA.SetData(1, frameBase.GetPlane());
+            DA.SetData(1, new Plane(frameBase.GetPlane()));
             DA.SetDataList(2, frameTool.GetValuesList());
-            DA.SetData(3, frameTool.GetPlane());
+            DA.SetData(3, new Plane(frameTool.GetPlane()));
         }
 
         /// <summary>
