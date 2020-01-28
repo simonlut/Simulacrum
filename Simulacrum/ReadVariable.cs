@@ -61,13 +61,15 @@ namespace Simulacrum
             bool triggerRead = false;
             int refreshRate = 0;
 
+            bool getSocket = DA.GetData(0, ref abstractSocket);
+
             //Check input
             if (_clientSocket == null)
             {
-                if (!DA.GetData(0, ref abstractSocket)) return;
+                if (!getSocket) return;
                 abstractSocket.CastTo(ref _clientSocket);
             }
-            else if (_clientSocket != null && !DA.GetData(0, ref abstractSocket))
+            else if (_clientSocket != null && !getSocket)
             {
                 try
                 {

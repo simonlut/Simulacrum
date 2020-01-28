@@ -53,8 +53,7 @@ namespace Simulacrum
             catch (SocketException e)
             {
                 component.ClearRuntimeMessages();
-                component.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Your connection is abruptly closed by the host, make sure to check your cables and if the server is running. Then, turn the connection off and on again.");
-                return "Error, No Connection";
+                component.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Your connection is abruptly closed by the host, make sure to check your cables and if the server is running.");
             }
             catch (ArgumentNullException e)
             {
