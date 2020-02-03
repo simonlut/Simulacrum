@@ -4,6 +4,10 @@
  Made by: [Nicolas Kubail Kalousdian](https://github.com/t3ch-support) and [Simon Lut](https://github.com/simonlut)
  
  Read and write global variables to a KUKA Robot arm using [KukaVarProxy](https://github.com/ImtsSrl/KUKAVARPROXY), directly from Grasshopper.
+ 
+ WARNING!
+ - Do not use this software for dangerous applications such as milling.
+ - If you would like to come close to the robot, set it in T1 and make sure that someone else is also present.
 
 ## Setup 
 Kuka:
@@ -15,6 +19,7 @@ Kuka:
 6. Go back to Kuka by using alt-tab, you are always able to switch back-and-forth this way.
 7. Make sure to initialize the global variables you defined in your .dat file in your .src file.
 8. Run the .src file to the point that the global variables are initialized. They are now accessible by KukaVarProxy.
+9. Make sure that debug is off, when sending large amount of information. 
 
 Laptop:
 1. Drag the .gha file in Simulacrum\bin in your libraries folder of Grasshopper.
