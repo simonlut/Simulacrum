@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Special;
 using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 
@@ -92,14 +93,15 @@ namespace Simulacrum
             {
                 string response = Util.WriteVariable(ref _clientSocket, varWrite, varData, this);
                 _oResponse = response;
+
+                if (this.Params.Input[3].Sources[0].GetType() == typeof(GH_BooleanToggle))
+                {
+                    GH_Document doc = OnPingDocument();
+                    doc?.ScheduleSolution(refreshRate, ScheduleCallback);
+                }
             }
 
             DA.SetData(0, _oResponse);
-
-
-            // Schedule loop for amount of times per second.
-            GH_Document doc = OnPingDocument();
-            doc?.ScheduleSolution(refreshRate, ScheduleCallback);
         }
 
 

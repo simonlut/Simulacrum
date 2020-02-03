@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Special;
 using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 
@@ -91,10 +92,12 @@ namespace Simulacrum
             {
                 string response = Util.ReadVariable(ref _clientSocket, varRead, this);
                 DA.SetData(0, response);
+                if (this.Params.Input[2].Sources[0].GetType() == typeof(GH_BooleanToggle))
+                {
+                    GH_Document doc = OnPingDocument();
+                    doc?.ScheduleSolution(refreshRate, ScheduleCallback);
+                }
             }
-
-            GH_Document doc = OnPingDocument();
-            doc?.ScheduleSolution(refreshRate, ScheduleCallback);
         }
         #endregion
 
