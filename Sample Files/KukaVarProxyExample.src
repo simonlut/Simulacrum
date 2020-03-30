@@ -1,0 +1,45 @@
+&ACCESS RVO1
+&COMMENT 
+DEF StiffySense ( )
+   
+   KukaFast = FALSE
+   NextReceived = FALSE
+   KukaMove = TRUE
+   KukaToPoint = {E6AXIS: A1 0, A2 -90, A3 90, A4 0, A5 0, A6 0}
+   MoveCounter = 0
+   
+   ;Robot Speed
+   CVelFast = 100
+   CVelSlow = 30
+   
+   BAS(#INITMOV,0 )
+   BAS(#VEL_CP, 0.6)        ;Continous Path velocity (m/s)
+   BAS(# VEL_PTP, 20)       ;Point-to-Point movement
+   BAS(#BASE, 24)
+   BAS(#TOOL, 7)          ;tool coordinate system
+   HOME = $POS_ACT         ; setting the home position as the current position
+   
+   ;PTP HOME
+   PTP HOME 
+   
+   ;While KukaMove is true, do linear motion at a certain speed  
+   WHILE KukaMove
+      ;Check if point has been updated to next point move robot.
+      IF NextReceived == TRUE THEN
+         IF KukaFast == TRUE THEN
+            
+            $APO.CVEL=CVelFast
+            LIN KukaToPoint C_VEL
+            MoveCounter = MoveCounter + 1
+            NextReceived = FALSE
+         ELSE 
+            IF KukaFast == FALSE THEN
+               $APO.CVEL=CVelSlow
+               LIN KukaToPoint C_VEL
+               MoveCounter = MoveCounter + 1
+               NextReceived = FALSE
+            ENDIF
+         ENDIF
+      ENDIF    
+   ENDWHILE
+END

@@ -1,0 +1,17 @@
+&ACCESS RVO1
+&COMMENT 
+DEFDAT StiffySense PUBLIC
+
+  DECL BOOL KukaFast
+  DECL BOOL NextReceived 
+  DECL BOOL KukaMove 
+  DECL E6AXIS KukaToPoint 
+  DECL INT MoveCounter 
+
+  DECL INT CVelFast
+  DECL INT CVelSlow
+  
+  DECL E6POS HOME
+  
+  
+ENDDAT
