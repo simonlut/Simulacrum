@@ -1,0 +1,26 @@
+&ACCESS RVO1
+&COMMENT 
+DEF StiffySense_Test_IMU ( )
+  
+  StiffyIMURotate = {E6AXIS: A1 0, A2 -90, A3 90, A4 0, A5 0, A6 0}
+  StiffyMove = TRUE
+  StiffyPointReceived = TRUE
+  
+  BAS(#INITMOV,0)
+  BAS(#VEL_CP, 0.6)  							; Continous Path velocity (m/s)
+  BAS(#VEL_PTP, 20) 
+  $BASE = {FRAME: X 0, Y 0, Z 0, A 0, B 0, C 0}   		; setting of the base coordinate system
+  HOME = $POS_ACT	
+  
+  PTP HOME							; Set current position as home position
+ 
+  WHILE StiffyMove
+    IF StiffyPointReceived == TRUE THEN
+      LIN StiffyIMURotate
+      StiffyPointReceived = FALSE
+    ENDIF
+  ENDWHILE
+ 
+  PTP HOME
+  
+END
