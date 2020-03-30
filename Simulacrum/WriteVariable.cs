@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Security.Cryptography;
+using System.Text;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Special;
 using Grasshopper.Kernel.Types;
@@ -39,7 +40,7 @@ namespace Simulacrum
             pManager.AddBooleanParameter("Run", "Run", "Write variable to KRC", GH_ParamAccess.item);
             //[4] Refresh Rate
             pManager.AddIntegerParameter("Refresh Rate", "Refresh Rate",
-                "Time between updates in milliseconds (ms)", GH_ParamAccess.item, 20);
+                "Time between updates in milliseconds (ms)", GH_ParamAccess.item, 100);
         }
 
         /// <summary>
@@ -87,6 +88,23 @@ namespace Simulacrum
             if (!DA.GetData(2, ref varData)) return;
             if (!DA.GetData(3, ref run)) return;
             if (!DA.GetData(4, ref refreshRate)) return;
+
+            if (Encoding.ASCII.GetBytes(varData).Length > 255)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error,"MessageSize is too big, messages can only contain a maximum of 255 bytes. Yours is: " + Encoding.ASCII.GetBytes(varData).Length);
+            }
+
+            if (refreshRate < 15)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
+                    "WARNING: Refresh rate too low, this can cause performance issues for grasshopper. The maximum robot read speed is 5ms (for all messages)");
+            }
+            if (refreshRate < 5)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
+                    "Refresh Rate too low. Absolute maximum speed is 5ms. This is not recommended. Try more in the region of ~20-70 ms");
+                return;
+            }
 
 
             if (run)

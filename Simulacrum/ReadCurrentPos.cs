@@ -40,7 +40,7 @@ namespace Simulacrum
             pManager.AddBooleanParameter("Run", "Run", "Run to read, for continues reading, plug-in a boolean toggle.", GH_ParamAccess.item);
             //[2] Refresh rate.
             pManager.AddIntegerParameter("Refresh Rate", "Refresh Rate",
-                "Time between updates in milliseconds (ms)", GH_ParamAccess.item,20);
+                "Time between updates in milliseconds (ms)", GH_ParamAccess.item, 50);
         }
 
         /// <summary>
@@ -106,6 +106,17 @@ namespace Simulacrum
             }
             if (!DA.GetData(1, ref triggerRead)) return;
             if (!DA.GetData(2, ref refreshRate)) return;
+            if (refreshRate < 15)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
+                    "WARNING: Refresh rate too low, this can cause performance issues for grasshopper. The maximum robot read speed is 5ms (for all messages)");
+            }
+            if (refreshRate < 5)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
+                    "Refresh Rate too low. Absolute maximum speed is 5ms. This is not recommended. Try more in the region of ~20-70 ms");
+                return;
+            }
 
             //If trigger is pressed, read data and output.
             if (triggerRead)

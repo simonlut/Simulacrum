@@ -41,7 +41,7 @@ namespace Simulacrum
             pManager.AddBooleanParameter("Run", "Run", "Write variable to KRC", GH_ParamAccess.item);
             //[4] Refresh rate.
             pManager.AddIntegerParameter("Refresh Rate", "Refresh Rate",
-                "Time between updates in milliseconds (ms)", GH_ParamAccess.item, 20);
+                "Time between updates in milliseconds (ms)", GH_ParamAccess.item, 100);
 
         }
 
@@ -92,6 +92,17 @@ namespace Simulacrum
             if (axisValues.Count != 6) AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Make sure to only give 6 axis values.");
             if (!DA.GetData(3, ref run)) return;
             if (!DA.GetData(4, ref refreshRate)) return;
+            if (refreshRate < 15)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
+                    "WARNING: Refresh rate too low, this can cause performance issues for grasshopper. The maximum robot read speed is 5ms (for all messages)");
+            }
+            if (refreshRate < 5)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
+                    "Refresh Rate too low. Absolute maximum speed is 5ms. This is not recommended. Try more in the region of ~20-70 ms");
+                return;
+            }
 
             if (axisValues.Count == 6)
             {

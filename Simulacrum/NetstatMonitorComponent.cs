@@ -18,7 +18,7 @@ namespace Simulacrum
 
         public NetstatMonitorComponent()
           : base("Netstat Monitor", "Monitor",
-              "Monitors active TCP connections. Checks every 5 seconds if the connection is still established.",
+              "Monitors active TCP connections. Checks every 1 second if the connection is still established.",
               "VirtualRobot", "KukaVarProxy")
         {
         }
@@ -66,7 +66,7 @@ namespace Simulacrum
             GH_Document doc = OnPingDocument();
             if (doc != null)
             {
-                doc.ScheduleSolution(500, ScheduleCallback);
+                doc.ScheduleSolution(1000, ScheduleCallback);
             }
         }
 
