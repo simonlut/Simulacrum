@@ -1,0 +1,7 @@
+﻿DEFDAT stiffts PUBLIC
+
+DECL POS MyPosSimon
+DECL BOOL SimonBool
+DECL E6POS HOME
+
+ENDDAT

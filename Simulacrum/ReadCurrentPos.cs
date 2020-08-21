@@ -114,7 +114,7 @@ namespace Simulacrum
             if (refreshRate < 5)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-                    "Refresh Rate too low. Absolute maximum speed is 5ms. This is not recommended. Try more in the region of ~20-70 ms");
+                    "Refresh Rate too low. Absolute maximum speed is 5ms. This is not recommended. Try to stay in the region of ~20-70 ms");
                 return;
             }
 
@@ -142,7 +142,7 @@ namespace Simulacrum
                 DA.SetData(5, CurrentAngles.SerializedString);
             }
 
-            if (this.Params.Input[2].Sources[0].GetType() == typeof(GH_BooleanToggle) && triggerRead)
+            if (this.Params.Input[1].Sources[0].GetType() == typeof(GH_BooleanToggle) && triggerRead)
             {
                 GH_Document doc = OnPingDocument();
                 doc?.ScheduleSolution(refreshRate, ScheduleCallback);

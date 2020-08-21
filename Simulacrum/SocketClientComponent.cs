@@ -67,6 +67,8 @@ namespace Simulacrum
         private bool startClient(string serverIP, int serverSocket)
         {
             m_clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            m_clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
             System.Net.IPAddress ip = System.Net.IPAddress.Parse(serverIP);
             IPEndPoint clientEndPoint = new IPEndPoint(ip, serverSocket);
             //m_clientSocket.SendTimeout = 25;

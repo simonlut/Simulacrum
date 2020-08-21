@@ -64,3 +64,12 @@ C:\Users\simon\Dropbox\ITECH 2018-2019\5. Behavioral\KUKAVARPROXY\Simulacrum2\Si
 C:\Users\simon\Dropbox\ITECH 2018-2019\5. Behavioral\KUKAVARPROXY\Simulacrum2\Simulacrum\Simulacrum\obj\Debug64\Simulacrum.csproj.CopyComplete
 C:\Users\simon\Dropbox\ITECH 2018-2019\5. Behavioral\KUKAVARPROXY\Simulacrum2\Simulacrum\Simulacrum\obj\Debug64\Simulacrum.dll
 C:\Users\simon\Dropbox\ITECH 2018-2019\5. Behavioral\KUKAVARPROXY\Simulacrum2\Simulacrum\Simulacrum\obj\Debug64\Simulacrum.pdb
+D:\Dropbox\ITECH 2018-2019\5. Behavioral\KUKAVARPROXY\Simulacrum2\Simulacrum\Simulacrum\bin\Simulacrum.dll
+D:\Dropbox\ITECH 2018-2019\5. Behavioral\KUKAVARPROXY\Simulacrum2\Simulacrum\Simulacrum\bin\Simulacrum.pdb
+D:\Dropbox\ITECH 2018-2019\5. Behavioral\KUKAVARPROXY\Simulacrum2\Simulacrum\Simulacrum\bin\RhinoCommon.xml
+D:\Dropbox\ITECH 2018-2019\5. Behavioral\KUKAVARPROXY\Simulacrum2\Simulacrum\Simulacrum\obj\Debug64\Simulacrum.csprojAssemblyReference.cache
+D:\Dropbox\ITECH 2018-2019\5. Behavioral\KUKAVARPROXY\Simulacrum2\Simulacrum\Simulacrum\obj\Debug64\Simulacrum.Properties.Resources.resources
+D:\Dropbox\ITECH 2018-2019\5. Behavioral\KUKAVARPROXY\Simulacrum2\Simulacrum\Simulacrum\obj\Debug64\Simulacrum.csproj.GenerateResource.cache
+D:\Dropbox\ITECH 2018-2019\5. Behavioral\KUKAVARPROXY\Simulacrum2\Simulacrum\Simulacrum\obj\Debug64\Simulacrum.csproj.CopyComplete
+D:\Dropbox\ITECH 2018-2019\5. Behavioral\KUKAVARPROXY\Simulacrum2\Simulacrum\Simulacrum\obj\Debug64\Simulacrum.dll
+D:\Dropbox\ITECH 2018-2019\5. Behavioral\KUKAVARPROXY\Simulacrum2\Simulacrum\Simulacrum\obj\Debug64\Simulacrum.pdb
